@@ -64,21 +64,21 @@
                     <Insets left="25.0" right="25.0" top="40.0"/>
                 </VBox.margin>
                 <children>
-                    <TableView layoutX="14.0" layoutY="14.0" prefHeight="407.0" prefWidth="653.0">
+                    <TableView layoutX="14.0" layoutY="14.0" prefHeight="407.0" prefWidth="653.0" fx:id="tableView">
                         <columns>
-                            <TableColumn prefWidth="64.0" text="id"/>
-                            <TableColumn prefWidth="273.0" text="name"/>
-                            <TableColumn prefWidth="315.0" text="age"/>
+                            <TableColumn prefWidth="64.0" text="id" fx:id="idCol"/>
+                            <TableColumn prefWidth="273.0" text="name" fx:id="nameCol"/>
+                            <TableColumn prefWidth="315.0" text="age" fx:id="ageCol"/>
                         </columns>
                     </TableView>
                     <Button layoutX="14.0" layoutY="442.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="114.0"
-                            text="Add"/>
+                            text="Add" onAction="#add"/>
                     <Button layoutX="196.0" layoutY="442.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="114.0"
-                            text="Edit"/>
+                            text="Edit" onAction="#edit"/>
                     <Button layoutX="377.0" layoutY="442.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="114.0"
-                            text="Delete"/>
+                            text="Delete" onAction="#delete"/>
                     <Button layoutX="553.0" layoutY="442.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="114.0"
-                            text="Clear"/>
+                            text="Update" onAction="#update"/>
                 </children>
             </Pane>
             <Pane prefHeight="63.0" prefWidth="733.0">
