@@ -29,13 +29,19 @@ public class MainStageController {
     public TableColumn<User, Integer> ageCol;
 
 
-    iTable table;
+    private iTable table;
     private Parent edit;
+    private FXMLLoader editLoader;
+    private EditController editController;
+    private Stage editStage;
 
     public void initialize() {
         table = new DBTable();
         try {
-            edit = FXMLLoader.load(getClass().getResource("/fxml/edit.fxml"));
+            editLoader = new FXMLLoader();
+            editLoader.setLocation(getClass().getResource("/fxml/edit.fxml"));
+            edit = editLoader.load();
+            editController = editLoader.getController();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -51,26 +57,31 @@ public class MainStageController {
 
 
     public void add(ActionEvent actionEvent) {
-            Window window = ((Node)actionEvent.getSource()).getScene().getWindow();
-        User selectedUser = (User)tableView.getSelectionModel().getSelectedItem();
-            openModalWindow("Creating new note", window);
+        Window window = ((Node) actionEvent.getSource()).getScene().getWindow();
+        openModalWindow("Creating new note", window);
 
     }
 
-    private void openModalWindow(String s, Window window){
-        Stage editStage = new Stage();
-        Scene scene = new Scene(edit);
-        editStage.setTitle(s);
-        editStage.setScene(scene);
-        editStage.setResizable(false);
-        editStage.initOwner(window);
-        editStage.initModality(Modality.WINDOW_MODAL);
+    private void openModalWindow(String s, Window window) {
+        if (editStage == null) {
+            editStage = new Stage();
+            Scene scene = new Scene(edit);
+            editStage.setTitle(s);
+            editStage.setScene(scene);
+            editStage.setResizable(false);
+            editStage.initOwner(window);
+            editStage.initModality(Modality.WINDOW_MODAL);
+        }
 
-        editStage.show();
+        editStage.showAndWait();
     }
 
     public void edit(ActionEvent actionEvent) {
+        Window window = ((Node) actionEvent.getSource()).getScene().getWindow();
 
+        User selectedUser = (User) tableView.getSelectionModel().getSelectedItem();
+        editController.setUser(selectedUser);
+        openModalWindow("Editing note", window);
     }
 
     public void delete(ActionEvent actionEvent) {
