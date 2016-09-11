@@ -23,8 +23,12 @@ public class EditController {
 
     public void setUser(User user) {
         this.user = user;
-        nameField.setText(user.getName());
-        ageField.setText(String.valueOf(user.getAge()));
+        if (user.getName() != "") {
+            nameField.setText(user.getName());
+        }
+        if (user.getAge() != -1) {
+            ageField.setText(String.valueOf(user.getAge()));
+        }
     }
 
     private void hideWindow(ActionEvent actionEvent) {
@@ -35,5 +39,9 @@ public class EditController {
         user.setName(nameField.getText());
         user.setAge(Integer.parseInt(ageField.getText()));
         hideWindow(actionEvent);
+    }
+
+    public User getUser() {
+        return user;
     }
 }

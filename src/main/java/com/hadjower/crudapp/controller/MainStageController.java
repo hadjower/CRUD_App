@@ -4,6 +4,8 @@ import com.hadjower.crudapp.model.DBTable;
 import com.hadjower.crudapp.model.User;
 import com.hadjower.crudapp.model.iTable;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -12,6 +14,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -37,6 +40,8 @@ public class MainStageController {
 
     public void initialize() {
         table = new DBTable();
+        initListeners();
+
         try {
             editLoader = new FXMLLoader();
             editLoader.setLocation(getClass().getResource("/fxml/edit.fxml"));
@@ -55,10 +60,22 @@ public class MainStageController {
         tableView.setItems(table.getAll());
     }
 
+    private void initListeners() {
+        tableView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent event) {
+                if (event.getClickCount() == 2) {
+                    edit(event);
+                }
+            }
+        });
+    }
+
 
     public void add(ActionEvent actionEvent) {
         Window window = ((Node) actionEvent.getSource()).getScene().getWindow();
+        editController.setUser(new User());
         openModalWindow("Creating new note", window);
+        table.getAll().add(editController.getUser());
 
     }
 
@@ -76,8 +93,8 @@ public class MainStageController {
         editStage.showAndWait();
     }
 
-    public void edit(ActionEvent actionEvent) {
-        Window window = ((Node) actionEvent.getSource()).getScene().getWindow();
+    public void edit(Event mouseEvent) {
+        Window window = ((Node) mouseEvent.getSource()).getScene().getWindow();
 
         User selectedUser = (User) tableView.getSelectionModel().getSelectedItem();
         editController.setUser(selectedUser);
@@ -85,7 +102,8 @@ public class MainStageController {
     }
 
     public void delete(ActionEvent actionEvent) {
-
+        User selectedUser = (User) tableView.getSelectionModel().getSelectedItem();
+        table.delete(selectedUser);
     }
 
     public void update(ActionEvent actionEvent) {

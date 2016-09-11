@@ -16,6 +16,12 @@ public class User {
         this.age = new SimpleIntegerProperty(age);
     }
 
+    public User() {
+        this.id = new SimpleIntegerProperty(-1);
+        this.name = new SimpleStringProperty("");
+        this.age = new SimpleIntegerProperty(-1);
+    }
+
     public int getId() {
         return id.get();
     }
