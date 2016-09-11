@@ -57,6 +57,11 @@ public class MainStageController {
 
         table.fillTestData();
 
+        update();
+    }
+
+    private void update() {
+        tableView.refresh();
         tableView.setItems(table.getAll());
     }
 
@@ -107,6 +112,6 @@ public class MainStageController {
     }
 
     public void update(ActionEvent actionEvent) {
-
+        update();
     }
 }
