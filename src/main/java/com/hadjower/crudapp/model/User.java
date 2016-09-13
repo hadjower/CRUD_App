@@ -57,4 +57,13 @@ public class User {
     public SimpleIntegerProperty ageProperty() {
         return age;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id.get() +
+                ", name=" + name.get() +
+                ", age=" + age.get() +
+                '}';
+    }
 }

@@ -23,11 +23,15 @@ public class EditController {
 
     public void setUser(User user) {
         this.user = user;
-        if (user.getName() != "") {
+        if (!user.getName().equals("")) {
             nameField.setText(user.getName());
+        } else {
+            nameField.setText("");
         }
         if (user.getAge() != -1) {
             ageField.setText(String.valueOf(user.getAge()));
+        } else {
+            ageField.setText("");
         }
     }
 

@@ -1,14 +1,11 @@
 package com.hadjower.crudapp.controller;
 
-import com.hadjower.crudapp.model.DBTable;
-import com.hadjower.crudapp.model.User;
-import com.hadjower.crudapp.model.iTable;
+import com.hadjower.crudapp.model.*;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TableColumn;
@@ -17,9 +14,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.Window;
+import javafx.stage.WindowEvent;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MainStageController {
     @FXML
@@ -33,14 +31,20 @@ public class MainStageController {
 
 
     private iTable table;
+    private Connectable connectable;
+
+    private Stage mainStage;
     private Parent edit;
     private FXMLLoader editLoader;
     private EditController editController;
     private Stage editStage;
 
     public void initialize() {
-        table = new DBTable();
-        initListeners();
+        connectable = new DBTable();
+        connectable.connect();
+        table = (iTable) connectable;
+//        table = new ListTable();
+//        initListeners();
 
         try {
             editLoader = new FXMLLoader();
@@ -65,7 +69,7 @@ public class MainStageController {
         tableView.setItems(table.getAll());
     }
 
-    private void initListeners() {
+    public void initListeners() {
         tableView.setOnMouseClicked(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
                 if (event.getClickCount() == 2) {
@@ -73,25 +77,29 @@ public class MainStageController {
                 }
             }
         });
+        mainStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            public void handle(WindowEvent event) {
+                connectable.closeConnection();
+            }
+        });
     }
 
 
     public void add(ActionEvent actionEvent) {
-        Window window = ((Node) actionEvent.getSource()).getScene().getWindow();
         editController.setUser(new User());
-        openModalWindow("Creating new note", window);
-        table.getAll().add(editController.getUser());
-
+        openModalWindow("Creating new note");
+        table.add(editController.getUser());
+        update();
     }
 
-    private void openModalWindow(String s, Window window) {
+    private void openModalWindow(String s) {
         if (editStage == null) {
             editStage = new Stage();
             Scene scene = new Scene(edit);
             editStage.setTitle(s);
             editStage.setScene(scene);
             editStage.setResizable(false);
-            editStage.initOwner(window);
+            editStage.initOwner(mainStage);
             editStage.initModality(Modality.WINDOW_MODAL);
         }
 
@@ -99,19 +107,33 @@ public class MainStageController {
     }
 
     public void edit(Event mouseEvent) {
-        Window window = ((Node) mouseEvent.getSource()).getScene().getWindow();
-
         User selectedUser = (User) tableView.getSelectionModel().getSelectedItem();
+        if (selectedUser == null)
+            return;
         editController.setUser(selectedUser);
-        openModalWindow("Editing note", window);
+        openModalWindow("Editing note");
+        table.edit(selectedUser);
+        update();
     }
 
     public void delete(ActionEvent actionEvent) {
         User selectedUser = (User) tableView.getSelectionModel().getSelectedItem();
+        if (selectedUser == null)
+            return;
         table.delete(selectedUser);
+        update();
     }
 
     public void update(ActionEvent actionEvent) {
         update();
+    }
+
+    public void setMainStage(Stage mainStage) {
+        this.mainStage = mainStage;
+    }
+
+    public void exit(ActionEvent actionEvent) {
+        connectable.closeConnection();
+        System.exit(0);
     }
 }

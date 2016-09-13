@@ -1,5 +1,6 @@
 package com.hadjower.crudapp;
 
+import com.hadjower.crudapp.controller.MainStageController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -9,7 +10,11 @@ import javafx.stage.Stage;
 
 public class Main extends Application{
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/main_stage.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(getClass().getResource("/fxml/main_stage.fxml"));
+        Parent root = fxmlLoader.load();
+        ((MainStageController)fxmlLoader.getController()).setMainStage(primaryStage);
+        ((MainStageController)fxmlLoader.getController()).initListeners();
         Scene scene = new Scene(root, 1050, 600);
         primaryStage.setTitle("CRUD Application");
         primaryStage.setScene(scene);
