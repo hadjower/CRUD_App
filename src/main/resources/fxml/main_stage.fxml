@@ -17,14 +17,14 @@
                     <Insets bottom="20.0" left="26.0" right="26.0" top="40.0"/>
                 </VBox.margin>
                 <children>
-                    <Label alignment="CENTER" layoutX="19.0" layoutY="14.0" text="Current database: %db_name%"
-                           textAlignment="CENTER">
+                    <Label alignment="CENTER" layoutX="15.0" layoutY="14.0" text="Current database: %db_name%"
+                           textAlignment="CENTER" fx:id="dbNameLabel">
                         <font>
                             <Font name="System Bold" size="15.0"/>
                         </font>
                     </Label>
                     <Label layoutX="12.0" layoutY="39.0" prefHeight="21.0" prefWidth="54.0" text="Tables:"/>
-                    <ListView layoutX="14.0" layoutY="59.0" prefHeight="104.0" prefWidth="211.0"/>
+                    <ListView layoutX="14.0" layoutY="59.0" prefHeight="104.0" prefWidth="211.0" fx:id="tablesListView"/>
                     <Button layoutX="19.0" layoutY="170.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="73.0"
                             text="Edit"/>
                     <Button layoutX="147.0" layoutY="170.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="73.0"
@@ -37,18 +37,18 @@
                 </VBox.margin>
                 <children>
                     <Label alignment="CENTER" layoutX="17.0" layoutY="7.0" prefHeight="21.0" prefWidth="211.0"
-                           text="Table %table_name%">
+                           text="Table %table_name%" fx:id="table_name">
                         <font>
                             <Font name="System Bold" size="15.0"/>
                         </font>
                     </Label>
                     <Label layoutX="14.0" layoutY="28.0" prefHeight="21.0" prefWidth="211.0"
-                           text="Amount of notes: %number%"/>
+                           text="Amount of notes: %number%" fx:id="notesCounter"/>
                     <Button layoutX="147.0" layoutY="186.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="73.0"
                             text="New"/>
                     <Button layoutX="19.0" layoutY="186.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="73.0"
                             text="Edit"/>
-                    <ListView layoutX="14.0" layoutY="75.0" prefHeight="104.0" prefWidth="211.0"/>
+                    <ListView layoutX="14.0" layoutY="75.0" prefHeight="104.0" prefWidth="211.0" fx:id="tableInfoListView"/>
                     <Label layoutX="14.0" layoutY="49.0" text="Columns:"/>
                 </children>
             </Pane>

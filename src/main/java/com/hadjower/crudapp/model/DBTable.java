@@ -1,19 +1,21 @@
 package com.hadjower.crudapp.model;
 
-import com.sun.javafx.collections.ObservableListWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 
 public class DBTable implements iTable, Connectable {
 
     private String URL = "jdbc:sqlite:src/main/resources/db/test.db";
+    private String dbName = "test";
+    private String tableName = "users";
+
     private Statement statement;
     private ResultSet res;
     private Connection conn;
-    private String tableName = "users";
 
     public void add(User user) {
         try {
@@ -69,13 +71,53 @@ public class DBTable implements iTable, Connectable {
 
     }
 
+    public String getTableName() {
+        return tableName;
+    }
+
+    public ArrayList<String> getColumnNames() {
+        try {
+//            res = statement.executeQuery("SELECT sql FROM sqlite_master WHERE tbl_name = 'users' AND TYPE = 'column'");
+            res = statement.executeQuery("SELECT * FROM " + tableName);
+            ResultSetMetaData rsmd = res.getMetaData();
+            ArrayList<String> columnNames = new ArrayList<String>();
+            for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+                columnNames.add(rsmd.getColumnName(i) + " " + rsmd.getColumnTypeName(i));
+//                System.out.println(columnNames.get(i - 1));
+            }
+            return columnNames;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String getDbName() {
+        return dbName;
+    }
+
+    public ObservableList<String> getTableNames() {
+        try {
+            ArrayList<String> tableNames = new ArrayList<String>();
+            res = statement.executeQuery("SELECT name FROM sqlite_master WHERE type='table'");
+            while (res.next()) {
+                tableNames.add(res.getString("name"));
+            }
+            return FXCollections.observableArrayList(tableNames);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public void connect() {
         try {
             conn = DriverManager.getConnection(URL);
             statement = conn.createStatement();
-            System.err.println("Database successfully opened");
+//            System.err.println("Database successfully opened");
         } catch (SQLException e) {
-            System.err.println("Connection error");
+//            System.err.println("Connection error");
+            e.printStackTrace();
         }
     }
 

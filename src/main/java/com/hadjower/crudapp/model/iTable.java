@@ -4,7 +4,6 @@ package com.hadjower.crudapp.model;
 import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public interface iTable {
     void add(User user);
@@ -13,4 +12,10 @@ public interface iTable {
     ObservableList<User> getAll();
 
     void fillTestData();
+
+    String getTableName();
+    ArrayList<String> getColumnNames();
+    String getDbName();
+
+    ObservableList<String> getTableNames();
 }

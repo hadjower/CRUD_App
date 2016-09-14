@@ -5,7 +5,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ListTable implements iTable {
     private ObservableList<User> list = FXCollections.observableArrayList();
@@ -30,5 +29,21 @@ public class ListTable implements iTable {
         add(new User(1, "John", 23));
         add(new User(2, "Vlad", 18));
         add(new User(3, "Ann", 25));
+    }
+
+    public String getTableName() {
+        return null;
+    }
+
+    public ArrayList<String> getColumnNames() {
+        return null;
+    }
+
+    public String getDbName() {
+        return null;
+    }
+
+    public ObservableList<String> getTableNames() {
+        return null;
     }
 }
