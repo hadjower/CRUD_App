@@ -5,7 +5,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -14,13 +13,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainStageController {
     @FXML
@@ -60,11 +58,7 @@ public class MainStageController {
 //        initListeners();
 
         loadFxml();
-
-        idCol.setCellValueFactory(new PropertyValueFactory<User, Integer>("id"));
-        nameCol.setCellValueFactory(new PropertyValueFactory<User, String>("name"));
-        ageCol.setCellValueFactory(new PropertyValueFactory<User, Integer>("age"));
-
+        tuneTable();
 //        table.fillTestData();
         setDBInfo();
         setTableInfo();
@@ -72,9 +66,62 @@ public class MainStageController {
         update();
     }
 
+    private void tuneTable() {
+//        idCol.setCellValueFactory(new PropertyValueFactory<User, Integer>("id"));
+//        nameCol.setCellValueFactory(new PropertyValueFactory<User, String>("name"));
+//        ageCol.setCellValueFactory(new PropertyValueFactory<User, Integer>("age"));
+        tableView.getColumns().clear();
+        setTableColumns();
+
+//        setNotes();
+    }
+
     private void setDBInfo() {
         dbNameLabel.setText("Current database: " + table.getDbName());
         tablesListView.setItems(table.getTableNames());
+    }
+
+    private void setNotes() {
+        List<Note> notes = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            Note note = new Note();
+            for (String columnName : Note.getColumnNames()) {
+                note.setItem(columnName, "test" + i);
+            }
+            notes.add(note);
+        }
+        tableView.setItems(FXCollections.observableArrayList(notes));
+    }
+
+    private void setTableColumns() {
+        List<String> columnNames = getColumnNames();
+
+        double width = calculateWidth(columnNames);
+
+        Note.setColumnNames(columnNames);
+        Note note = new Note();
+        for (String columnName : columnNames) {
+            note.setItem(columnName, "test");
+            TableColumn<Note, String> column = new TableColumn<>(columnName);
+            column.setMinWidth(columnName.equals("id") ? 40 : width);
+            column.setCellValueFactory(cd -> cd.getValue().getItems().get(columnName));
+            tableView.getColumns().add(column);
+        }
+    }
+
+    private double calculateWidth(List<String> columnNames) {
+        return columnNames.contains("id") ? (tableView.getPrefWidth() - 40)/(columnNames.size() - 1) : tableView.getPrefWidth()/columnNames.size();
+    }
+
+    private List<String> getColumnNames() {
+        List<String> columnNames = new ArrayList<>();
+        List<String> temp = table.getColumnNamesAndTypes();
+
+        for (int i = 0; i < temp.size(); i++) {
+            String str = temp.get(i);
+            columnNames.add(str.contains(" ") ? str.split(" ")[0] : str);
+        }
+        return columnNames;
     }
 
     private void loadFxml() {
@@ -90,7 +137,7 @@ public class MainStageController {
 
     private void setTableInfo() {
         table_name.setText("Table " + table.getTableName());
-        ObservableList<String> columnNames = FXCollections.observableArrayList(table.getColumnNames());
+        ObservableList<String> columnNames = FXCollections.observableArrayList(table.getColumnNamesAndTypes());
         tableInfoListView.setItems(columnNames);
         updateNotesCounter();
     }
@@ -106,18 +153,12 @@ public class MainStageController {
     }
 
     public void initListeners() {
-        tableView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent event) {
-                if (event.getClickCount() == 2) {
-                    edit(event);
-                }
+        tableView.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                edit(event);
             }
         });
-        mainStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            public void handle(WindowEvent event) {
-                connectable.closeConnection();
-            }
-        });
+        mainStage.setOnCloseRequest(event -> connectable.closeConnection());
     }
 
 

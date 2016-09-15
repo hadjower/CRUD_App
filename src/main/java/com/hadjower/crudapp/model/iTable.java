@@ -9,12 +9,12 @@ public interface iTable {
     void add(User user);
     void edit(User user);
     void delete(User user);
-    ObservableList<User> getAll();
+    ObservableList<Note> getAll();
 
     void fillTestData();
 
     String getTableName();
-    ArrayList<String> getColumnNames();
+    ArrayList<String> getColumnNamesAndTypes();
     String getDbName();
 
     ObservableList<String> getTableNames();

@@ -53,14 +53,27 @@ public class DBTable implements iTable, Connectable {
         }
     }
 
-    public ObservableList<User> getAll() {
+    public ObservableList<Note> getAll() {
         try {
-            ObservableList<User> list = FXCollections.observableArrayList();
+            ObservableList<Note> notes = FXCollections.observableArrayList();
             res = statement.executeQuery("SELECT * FROM " + tableName);
+            ResultSetMetaData rsmd = res.getMetaData();
             while (res.next()) {
-                list.add(new User(res.getInt("id"), res.getString("name"), res.getInt("age")));
+//                notes.add(new User(res.getInt("id"), res.getString("name"), res.getInt("age")));
+                Note note = new Note();
+                for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+                    switch (rsmd.getColumnTypeName(i)) {
+                        case "INTEGER":
+                            note.setItem(rsmd.getColumnName(i), res.getInt(i));
+                            break;
+                        case "TEXT":
+                            note.setItem(rsmd.getColumnName(i), res.getString(i));
+                            break;
+                    }
+                }
+                notes.add(note);
             }
-            return list;
+            return notes;
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -75,12 +88,12 @@ public class DBTable implements iTable, Connectable {
         return tableName;
     }
 
-    public ArrayList<String> getColumnNames() {
+    public ArrayList<String> getColumnNamesAndTypes() {
         try {
 //            res = statement.executeQuery("SELECT sql FROM sqlite_master WHERE tbl_name = 'users' AND TYPE = 'column'");
             res = statement.executeQuery("SELECT * FROM " + tableName);
             ResultSetMetaData rsmd = res.getMetaData();
-            ArrayList<String> columnNames = new ArrayList<String>();
+            ArrayList<String> columnNames = new ArrayList<>();
             for (int i = 1; i <= rsmd.getColumnCount(); i++) {
                 columnNames.add(rsmd.getColumnName(i) + " " + rsmd.getColumnTypeName(i));
 //                System.out.println(columnNames.get(i - 1));
@@ -98,7 +111,7 @@ public class DBTable implements iTable, Connectable {
 
     public ObservableList<String> getTableNames() {
         try {
-            ArrayList<String> tableNames = new ArrayList<String>();
+            ArrayList<String> tableNames = new ArrayList<>();
             res = statement.executeQuery("SELECT name FROM sqlite_master WHERE type='table'");
             while (res.next()) {
                 tableNames.add(res.getString("name"));

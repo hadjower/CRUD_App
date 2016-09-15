@@ -7,10 +7,10 @@ import javafx.collections.ObservableList;
 import java.util.ArrayList;
 
 public class ListTable implements iTable {
-    private ObservableList<User> list = FXCollections.observableArrayList();
+    private ObservableList<Note> list = FXCollections.observableArrayList();
 
     public void add(User user) {
-        list.add(user);
+//        list.add(user);
     }
 
     public void edit(User user) {
@@ -21,7 +21,7 @@ public class ListTable implements iTable {
         list.remove(user);
     }
 
-    public ObservableList<User> getAll() {
+    public ObservableList<Note> getAll() {
         return list;
     }
 
@@ -35,7 +35,7 @@ public class ListTable implements iTable {
         return null;
     }
 
-    public ArrayList<String> getColumnNames() {
+    public ArrayList<String> getColumnNamesAndTypes() {
         return null;
     }
 
