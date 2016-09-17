@@ -5,6 +5,7 @@ import javafx.collections.ObservableList;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class DBTable implements iTable, Connectable {
@@ -12,41 +13,103 @@ public class DBTable implements iTable, Connectable {
     private String URL = "jdbc:sqlite:src/main/resources/db/test.db";
     private String dbName = "test";
     private String tableName = "users";
+    private String primaryKey = "id";
 
     private Statement statement;
     private ResultSet res;
     private Connection conn;
 
-    public void add(User user) {
+    public void add(Note note) {
+        String insert = createAddQuery(note);
         try {
-            String insert = "INSERT INTO " + tableName +" (name, age) VALUES (?, ?)";
-            PreparedStatement ps = conn.prepareStatement(insert);
-            ps.setString(1, user.getName());
-            ps.setInt(2, user.getAge());
-            ps.execute();
+            statement.execute(insert);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public void edit(User user) {
-        String update = "UPDATE " + tableName + " SET name=?, age=? WHERE id=?";
+    private String createAddQuery(Note note) {
+        List<String> colNames = Note.getColumnNames();
+        int paramsQuantity = colNames.size();
+        StringBuilder insert = new StringBuilder("INSERT INTO " + tableName);
+        insert.append(" (");
+        for (int i = 1; i < paramsQuantity; i++) {
+            insert.append(colNames.get(i));
+            if (i != paramsQuantity - 1)
+                insert.append(", ");
+        }
+        insert.append(") VALUES (");
+        for (int i = 1; i < paramsQuantity; i++) {
+
+            String value = note.getValue(colNames.get(i));
+
+            //if column from list with column names and types contains TEXT e.g. String type
+            if (getColumnNamesAndTypes().get(i).contains("TEXT")) {
+                insert.append("'" + value + "'");
+            } else {
+                if (value.equals("")) {
+                    insert.append("NULL");
+                } else {
+                    insert.append(value);
+                }
+            }
+
+            if (i != paramsQuantity - 1)
+                insert.append(", ");
+        }
+        insert.append(")");
+        System.out.println(insert);
+        return insert.toString();
+    }
+
+    public void edit(Note note) {
+        String update = getUpdateQuery(note);
+
         try {
-            PreparedStatement ps = conn.prepareStatement(update);
-            ps.setString(1, user.getName());
-            ps.setInt(2, user.getAge());
-            ps.setInt(3, user.getId());
-            ps.execute();
+            statement.execute(update);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public void delete(User user) {
-        String delete = "DELETE FROM " + tableName + " WHERE id=?";
+    private String getUpdateQuery(Note note) {
+        List<String> colNames = Note.getColumnNames();
+        int paramsQuantity = colNames.size();
+
+        StringBuilder update = new StringBuilder("UPDATE " + tableName);
+        update.append(" SET ");
+
+        for (int i = 1; i < paramsQuantity; i++) {
+            update.append(colNames.get(i));
+            update.append("=");
+
+            String value = note.getValue(colNames.get(i));
+
+            //if column from list with column names and types contains TEXT e.g. String type
+            if (getColumnNamesAndTypes().get(i).contains("TEXT")) {
+                update.append("'" + value + "'");
+            } else {
+                if (value.equals("")) {
+                    update.append("NULL");
+                } else {
+                    update.append(value);
+                }
+            }
+
+            if (i != paramsQuantity - 1)
+                update.append(", ");
+        }
+        update.append(" WHERE ").append(primaryKey).append("=");
+        update.append(note.getValue(primaryKey));
+
+        return update.toString();
+    }
+
+    public void delete(Note note) {
+        String delete = "DELETE FROM " + tableName + " WHERE " + primaryKey  + "=?";
         try {
             PreparedStatement ps = conn.prepareStatement(delete);
-            ps.setInt(1, user.getId());
+            ps.setInt(1, Integer.parseInt(note.getValue(primaryKey)));
             ps.execute();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -59,7 +122,6 @@ public class DBTable implements iTable, Connectable {
             res = statement.executeQuery("SELECT * FROM " + tableName);
             ResultSetMetaData rsmd = res.getMetaData();
             while (res.next()) {
-//                notes.add(new User(res.getInt("id"), res.getString("name"), res.getInt("age")));
                 Note note = new Note();
                 for (int i = 1; i <= rsmd.getColumnCount(); i++) {
                     switch (rsmd.getColumnTypeName(i)) {
@@ -80,9 +142,6 @@ public class DBTable implements iTable, Connectable {
         return null;
     }
 
-    public void fillTestData() {
-
-    }
 
     public String getTableName() {
         return tableName;
@@ -90,13 +149,11 @@ public class DBTable implements iTable, Connectable {
 
     public ArrayList<String> getColumnNamesAndTypes() {
         try {
-//            res = statement.executeQuery("SELECT sql FROM sqlite_master WHERE tbl_name = 'users' AND TYPE = 'column'");
             res = statement.executeQuery("SELECT * FROM " + tableName);
             ResultSetMetaData rsmd = res.getMetaData();
             ArrayList<String> columnNames = new ArrayList<>();
             for (int i = 1; i <= rsmd.getColumnCount(); i++) {
                 columnNames.add(rsmd.getColumnName(i) + " " + rsmd.getColumnTypeName(i));
-//                System.out.println(columnNames.get(i - 1));
             }
             return columnNames;
         } catch (SQLException e) {

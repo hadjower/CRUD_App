@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0"
+            prefWidth="500.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.hadjower.crudapp.controller.NoteFieldController">
+    <children>
+        <Label layoutX="28.0" layoutY="32.0" prefHeight="36.0" prefWidth="138.0" text="Anonymous"
+               AnchorPane.leftAnchor="20.0" fx:id="nameLabel" textAlignment="RIGHT">
+            <font>
+                <Font size="25.0"/>
+            </font>
+        </Label>
+        <TextField fx:id="textField" layoutX="107.0" layoutY="35.0" prefHeight="31.0" prefWidth="309.0"
+                   AnchorPane.leftAnchor="167.0" AnchorPane.rightAnchor="24.0"/>
+    </children>
+</AnchorPane>

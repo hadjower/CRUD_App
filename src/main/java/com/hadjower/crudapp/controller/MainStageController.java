@@ -54,12 +54,9 @@ public class MainStageController {
         connectable = new DBTable();
         connectable.connect();
         table = (iTable) connectable;
-//        table = new ListTable();
-//        initListeners();
 
         loadFxml();
         tuneTable();
-//        table.fillTestData();
         setDBInfo();
         setTableInfo();
 
@@ -67,13 +64,8 @@ public class MainStageController {
     }
 
     private void tuneTable() {
-//        idCol.setCellValueFactory(new PropertyValueFactory<User, Integer>("id"));
-//        nameCol.setCellValueFactory(new PropertyValueFactory<User, String>("name"));
-//        ageCol.setCellValueFactory(new PropertyValueFactory<User, Integer>("age"));
         tableView.getColumns().clear();
         setTableColumns();
-
-//        setNotes();
     }
 
     private void setDBInfo() {
@@ -81,17 +73,6 @@ public class MainStageController {
         tablesListView.setItems(table.getTableNames());
     }
 
-    private void setNotes() {
-        List<Note> notes = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            Note note = new Note();
-            for (String columnName : Note.getColumnNames()) {
-                note.setItem(columnName, "test" + i);
-            }
-            notes.add(note);
-        }
-        tableView.setItems(FXCollections.observableArrayList(notes));
-    }
 
     private void setTableColumns() {
         List<String> columnNames = getColumnNames();
@@ -163,9 +144,9 @@ public class MainStageController {
 
 
     public void add(ActionEvent actionEvent) {
-        editController.setUser(new User());
+        editController.setNote(new Note());
         openModalWindow("Creating new note");
-        table.add(editController.getUser());
+        table.add(editController.getNote());
         update();
     }
 
@@ -175,7 +156,6 @@ public class MainStageController {
             Scene scene = new Scene(edit);
             editStage.setTitle(s);
             editStage.setScene(scene);
-            editStage.setResizable(false);
             editStage.initOwner(mainStage);
             editStage.initModality(Modality.WINDOW_MODAL);
         }
@@ -184,20 +164,20 @@ public class MainStageController {
     }
 
     public void edit(Event mouseEvent) {
-        User selectedUser = (User) tableView.getSelectionModel().getSelectedItem();
-        if (selectedUser == null)
+        Note selectedNote = (Note) tableView.getSelectionModel().getSelectedItem();
+        if (selectedNote == null)
             return;
-        editController.setUser(selectedUser);
+        editController.setNote(selectedNote);
         openModalWindow("Editing note");
-        table.edit(selectedUser);
+        table.edit(selectedNote);
         update();
     }
 
     public void delete(ActionEvent actionEvent) {
-        User selectedUser = (User) tableView.getSelectionModel().getSelectedItem();
-        if (selectedUser == null)
+        Note selectedNote = (Note) tableView.getSelectionModel().getSelectedItem();
+        if (selectedNote == null)
             return;
-        table.delete(selectedUser);
+        table.delete(selectedNote);
         update();
     }
 

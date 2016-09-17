@@ -32,4 +32,11 @@ public class Note {
         if (value instanceof Integer || value instanceof Double || value instanceof Float || value instanceof Boolean)
             items.put(key, new SimpleStringProperty(String.valueOf(value)));
     }
+
+    public String getValue(String key) {
+        if (items.containsKey(key)) {
+            return items.get(key).get();
+        }
+        return null;
+    }
 }
