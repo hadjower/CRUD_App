@@ -1,6 +1,8 @@
 package com.hadjower.crudapp.controller;
 
 import com.hadjower.crudapp.model.*;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -9,10 +11,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -36,9 +35,13 @@ public class MainStageController {
     @FXML
     public Label notesCounter;
     @FXML
-    public ListView tablesListView;
+    public ListView<String> tablesListView;
     @FXML
     public Label dbNameLabel;
+    @FXML
+    public Button openTableBtn;
+    @FXML
+    public Button newDelTableBtn;
 
 
     private iTable table;
@@ -56,10 +59,18 @@ public class MainStageController {
         table = (iTable) connectable;
 
         loadFxml();
-        tuneTable();
+
         setDBInfo();
         setTableInfo();
 
+
+//        tuneTable();
+//        update();
+    }
+
+    private void loadTable(String tableName) {
+        table.setTableName(tableName);
+        tuneTable();
         update();
     }
 
@@ -68,11 +79,11 @@ public class MainStageController {
         setTableColumns();
     }
 
+
     private void setDBInfo() {
         dbNameLabel.setText("Current database: " + table.getDbName());
         tablesListView.setItems(table.getTableNames());
     }
-
 
     private void setTableColumns() {
         List<String> columnNames = getColumnNames();
@@ -84,7 +95,7 @@ public class MainStageController {
         for (String columnName : columnNames) {
             note.setItem(columnName, "test");
             TableColumn<Note, String> column = new TableColumn<>(columnName);
-            column.setMinWidth(columnName.equals("id") ? 40 : width);
+            column.setMinWidth(columnName.equals(table.getPrimaryKey()) ? 40 : width);
             column.setCellValueFactory(cd -> cd.getValue().getItems().get(columnName));
             tableView.getColumns().add(column);
         }
@@ -133,15 +144,27 @@ public class MainStageController {
         updateNotesCounter();
     }
 
+
     public void initListeners() {
         tableView.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
                 edit(event);
             }
         });
-        mainStage.setOnCloseRequest(event -> connectable.closeConnection());
-    }
 
+        mainStage.setOnCloseRequest(event -> connectable.closeConnection());
+
+        tablesListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            openTableBtn.setDisable(false);
+
+            if (tablesListView.getSelectionModel().getSelectedItem() != null) {
+                newDelTableBtn.setText("Delete");
+            } else {
+                newDelTableBtn.setText("New");
+
+            }
+        });
+    }
 
     public void add(ActionEvent actionEvent) {
         editController.setNote(new Note());
@@ -192,5 +215,24 @@ public class MainStageController {
     public void exit(ActionEvent actionEvent) {
         connectable.closeConnection();
         System.exit(0);
+    }
+
+    public void click(ActionEvent actionEvent) {
+        Object object = actionEvent.getSource();
+
+        if (object instanceof Button) {
+            Button btn = (Button) object;
+
+            switch (btn.getId()) {
+                case "openTableBtn":
+                    String tableName = tablesListView.getSelectionModel().getSelectedItem();
+                    tablesListView.getSelectionModel().clearSelection();
+                    loadTable(tableName);
+                    btn.setDisable(true);
+                    break;
+                case "newDelTableBtn":
+                    break;
+            }
+        }
     }
 }

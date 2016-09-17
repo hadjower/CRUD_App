@@ -7,86 +7,74 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0"
-      prefWidth="1050.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.hadjower.crudapp.controller.MainStageController">
-    <VBox prefHeight="200.0" prefWidth="300.0">
-        <children>
-            <Pane prefHeight="215.0" prefWidth="245.0">
-                <VBox.margin>
-                    <Insets bottom="20.0" left="26.0" right="26.0" top="40.0"/>
-                </VBox.margin>
-                <children>
-                    <Label alignment="CENTER" layoutX="15.0" layoutY="14.0" text="Current database: %db_name%"
-                           textAlignment="CENTER" fx:id="dbNameLabel">
-                        <font>
-                            <Font name="System Bold" size="15.0"/>
-                        </font>
-                    </Label>
-                    <Label layoutX="12.0" layoutY="39.0" prefHeight="21.0" prefWidth="54.0" text="Tables:"/>
-                    <ListView layoutX="14.0" layoutY="59.0" prefHeight="104.0" prefWidth="211.0" fx:id="tablesListView"/>
-                    <Button layoutX="19.0" layoutY="170.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="73.0"
-                            text="Edit"/>
-                    <Button layoutX="147.0" layoutY="170.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="73.0"
-                            text="New"/>
-                </children>
-            </Pane>
-            <Pane prefHeight="215.0" prefWidth="245.0">
-                <VBox.margin>
-                    <Insets bottom="30.0" left="26.0" right="26.0" top="40.0"/>
-                </VBox.margin>
-                <children>
-                    <Label alignment="CENTER" layoutX="17.0" layoutY="7.0" prefHeight="21.0" prefWidth="211.0"
-                           text="Table %table_name%" fx:id="table_name">
-                        <font>
-                            <Font name="System Bold" size="15.0"/>
-                        </font>
-                    </Label>
-                    <Label layoutX="14.0" layoutY="28.0" prefHeight="21.0" prefWidth="211.0"
-                           text="Amount of notes: %number%" fx:id="notesCounter"/>
-                    <Button layoutX="147.0" layoutY="186.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="73.0"
-                            text="New"/>
-                    <Button layoutX="19.0" layoutY="186.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="73.0"
-                            text="Edit"/>
-                    <ListView layoutX="14.0" layoutY="75.0" prefHeight="104.0" prefWidth="211.0" fx:id="tableInfoListView"/>
-                    <Label layoutX="14.0" layoutY="49.0" text="Columns:"/>
-                </children>
-            </Pane>
-        </children>
-    </VBox>
-    <VBox prefHeight="600.0" prefWidth="736.0">
-        <HBox.margin>
-            <Insets left="20.0"/>
-        </HBox.margin>
-        <children>
-            <Pane prefHeight="497.0" prefWidth="683.0">
-                <VBox.margin>
-                    <Insets left="25.0" right="25.0" top="40.0"/>
-                </VBox.margin>
-                <children>
-                    <TableView layoutX="14.0" layoutY="14.0" prefHeight="407.0" prefWidth="653.0" fx:id="tableView">
-                        <columns>
-                            <TableColumn prefWidth="64.0" text="id" fx:id="idCol"/>
-                            <TableColumn prefWidth="273.0" text="name" fx:id="nameCol"/>
-                            <TableColumn prefWidth="315.0" text="age" fx:id="ageCol"/>
-                        </columns>
-                    </TableView>
-                    <Button layoutX="14.0" layoutY="442.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="114.0"
-                            text="Add" onAction="#add"/>
-                    <Button layoutX="196.0" layoutY="442.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="114.0"
-                            text="Edit" onAction="#edit"/>
-                    <Button layoutX="377.0" layoutY="442.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="114.0"
-                            text="Delete" onAction="#delete"/>
-                    <Button layoutX="553.0" layoutY="442.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="114.0"
-                            text="Update" onAction="#update"/>
-                </children>
-            </Pane>
-            <Pane prefHeight="63.0" prefWidth="733.0">
-                <children>
-                    <Button layoutX="615.0" layoutY="12.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="84.0"
-                            text="Exit" onAction="#exit"/>
-                </children>
-            </Pane>
-        </children>
-    </VBox>
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1050.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hadjower.crudapp.controller.MainStageController">
+   <children>
+       <VBox prefHeight="200.0" prefWidth="300.0">
+           <children>
+               <Pane prefHeight="215.0" prefWidth="245.0">
+                   <VBox.margin>
+                       <Insets bottom="20.0" left="26.0" right="26.0" top="40.0" />
+                   </VBox.margin>
+                   <children>
+                       <Label fx:id="dbNameLabel" alignment="CENTER" layoutX="15.0" layoutY="14.0" text="Current database: %db_name%" textAlignment="CENTER">
+                           <font>
+                               <Font name="System Bold" size="15.0" />
+                           </font>
+                       </Label>
+                       <Label layoutX="12.0" layoutY="39.0" prefHeight="21.0" prefWidth="54.0" text="Tables:" />
+                       <ListView fx:id="tablesListView" layoutX="14.0" layoutY="59.0" prefHeight="104.0" prefWidth="211.0" />
+                       <Button fx:id="openTableBtn" layoutX="19.0" layoutY="170.0" mnemonicParsing="false" onAction="#click" prefHeight="31.0" prefWidth="73.0" text="Open" />
+                       <Button fx:id="newDelTableBtn" layoutX="147.0" layoutY="170.0" mnemonicParsing="false" onAction="#click" prefHeight="31.0" prefWidth="73.0" text="New" />
+                   </children>
+               </Pane>
+               <Pane prefHeight="215.0" prefWidth="245.0">
+                   <VBox.margin>
+                       <Insets bottom="30.0" left="26.0" right="26.0" top="40.0" />
+                   </VBox.margin>
+                   <children>
+                       <Label fx:id="table_name" alignment="CENTER" layoutX="17.0" layoutY="7.0" prefHeight="21.0" prefWidth="211.0" text="Table %table_name%">
+                           <font>
+                               <Font name="System Bold" size="15.0" />
+                           </font>
+                       </Label>
+                       <Label fx:id="notesCounter" layoutX="14.0" layoutY="28.0" prefHeight="21.0" prefWidth="211.0" text="Amount of notes: %number%" />
+                       <Button layoutX="147.0" layoutY="186.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="73.0" text="New" />
+                       <Button layoutX="19.0" layoutY="186.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="73.0" text="Edit" />
+                       <ListView fx:id="tableInfoListView" layoutX="14.0" layoutY="75.0" prefHeight="104.0" prefWidth="211.0" />
+                       <Label layoutX="14.0" layoutY="49.0" text="Columns:" />
+                   </children>
+               </Pane>
+           </children>
+       </VBox>
+       <VBox prefHeight="600.0" prefWidth="736.0">
+           <HBox.margin>
+               <Insets left="20.0" />
+           </HBox.margin>
+           <children>
+               <Pane prefHeight="497.0" prefWidth="683.0">
+                   <VBox.margin>
+                       <Insets left="25.0" right="25.0" top="40.0" />
+                   </VBox.margin>
+                   <children>
+                       <TableView fx:id="tableView" layoutX="14.0" layoutY="14.0" prefHeight="407.0" prefWidth="653.0">
+                           <columns>
+                               <TableColumn fx:id="idCol" prefWidth="64.0" text="id" />
+                               <TableColumn fx:id="nameCol" prefWidth="273.0" text="name" />
+                               <TableColumn fx:id="ageCol" prefWidth="315.0" text="age" />
+                           </columns>
+                       </TableView>
+                       <Button layoutX="14.0" layoutY="442.0" mnemonicParsing="false" onAction="#add" prefHeight="41.0" prefWidth="114.0" text="Add" />
+                       <Button layoutX="196.0" layoutY="442.0" mnemonicParsing="false" onAction="#edit" prefHeight="41.0" prefWidth="114.0" text="Edit" />
+                       <Button layoutX="377.0" layoutY="442.0" mnemonicParsing="false" onAction="#delete" prefHeight="41.0" prefWidth="114.0" text="Delete" />
+                       <Button layoutX="553.0" layoutY="442.0" mnemonicParsing="false" onAction="#update" prefHeight="41.0" prefWidth="114.0" text="Update" />
+                   </children>
+               </Pane>
+               <Pane prefHeight="63.0" prefWidth="733.0">
+                   <children>
+                       <Button layoutX="615.0" layoutY="12.0" mnemonicParsing="false" onAction="#exit" prefHeight="32.0" prefWidth="84.0" text="Exit" />
+                   </children>
+               </Pane>
+           </children>
+       </VBox>
+   </children>
 </HBox>

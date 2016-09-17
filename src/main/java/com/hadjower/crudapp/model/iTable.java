@@ -14,6 +14,9 @@ public interface iTable {
     String getTableName();
     ArrayList<String> getColumnNamesAndTypes();
     String getDbName();
+    String getPrimaryKey();
 
     ObservableList<String> getTableNames();
+
+    void setTableName(String tableName);
 }

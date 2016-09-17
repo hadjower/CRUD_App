@@ -166,6 +166,11 @@ public class DBTable implements iTable, Connectable {
         return dbName;
     }
 
+    @Override
+    public String getPrimaryKey() {
+        return primaryKey;
+    }
+
     public ObservableList<String> getTableNames() {
         try {
             ArrayList<String> tableNames = new ArrayList<>();
@@ -178,6 +183,11 @@ public class DBTable implements iTable, Connectable {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
     }
 
     public void connect() {

@@ -19,7 +19,6 @@ public class EditController {
     @FXML
     private VBox notesVBox;
 
-    private User user;
     private Note note;
     private List<NoteField> fields;
 
