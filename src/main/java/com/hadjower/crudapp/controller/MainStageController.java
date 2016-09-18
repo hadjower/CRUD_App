@@ -184,10 +184,12 @@ public class MainStageController {
     }
 
     public void add(ActionEvent actionEvent) {
-        editController.setNote(new Note());
+        editController.setNote(null);
         openModalWindow("Creating new note", Window.EDIT);
         //if cancel wasn't pressed
-        table.add(editController.getNote());
+        if (editController.getNote() != null) {
+            table.add(editController.getNote());
+        }
         update();
     }
 
@@ -274,7 +276,7 @@ public class MainStageController {
                         if (tableName != null) {
                             String currTable = table.getTableName();
                             table.deleteTable(tableName);
-                            if (currTable.equals(tableName)) {
+                            if (currTable != null && currTable.equals(tableName)) {
                                 tableView.getColumns().clear();
                                 setTableInfo();
                             }

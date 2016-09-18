@@ -46,8 +46,10 @@ public class EditController {
             root.setPrefHeight((fieldCounter - 1) * 100 + 60);
         }
 
-        for (int i = 0; i < fieldCounter - 1; i++) {
-            fields.get(i).setTextFieldText(note.getValue(Note.getColumnNames().get(i+1)));
+        if (note != null) {
+            for (int i = 0; i < fieldCounter - 1; i++) {
+                fields.get(i).setTextFieldText(note.getValue(Note.getColumnNames().get(i+1)));
+            }
         }
     }
 
@@ -56,6 +58,9 @@ public class EditController {
     }
 
     public void complete(ActionEvent actionEvent) {
+        if (note == null) {
+            note = new Note();
+        }
         for (int i = 0; i < fields.size(); i++) {
             note.setItem(Note.getColumnNames().get(i+1), fields.get(i).getValue());
         }

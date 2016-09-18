@@ -44,7 +44,7 @@ public class DBTable implements iTable, Connectable {
             String value = note.getValue(colNames.get(i));
 
             //if column from list with column names and types contains TEXT e.g. String type
-            if (getColumnNamesAndTypes().get(i).contains("TEXT")) {
+            if (getColumnNamesAndTypes().get(i).contains("TEXT") && value != null) {
                 insert.append("'" + value + "'");
             } else {
                 if (value.equals("")) {
@@ -86,7 +86,7 @@ public class DBTable implements iTable, Connectable {
             String value = note.getValue(colNames.get(i));
 
             //if column from list with column names and types contains TEXT e.g. String type
-            if (getColumnNamesAndTypes().get(i).contains("TEXT")) {
+            if (getColumnNamesAndTypes().get(i).contains("TEXT") && value != null) {
                 update.append("'" + value + "'");
             } else {
                 if (value.equals("")) {
