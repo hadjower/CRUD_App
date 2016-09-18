@@ -32,7 +32,6 @@ public class EditController {
         this.note = note;
         int fieldCounter = Note.getColumnNames().size();
 
-        //todo after changing tables set fields to null
         if (fields == null) {
             fields = new ArrayList<>(fieldCounter - 1);
             for (int i = 1; i < fieldCounter; i++) {
@@ -62,5 +61,10 @@ public class EditController {
 
     public Note getNote() {
         return note;
+    }
+
+    public void reset() {
+        notesVBox.getChildren().clear();
+        fields = null;
     }
 }

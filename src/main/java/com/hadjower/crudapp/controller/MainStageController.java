@@ -1,8 +1,7 @@
 package com.hadjower.crudapp.controller;
 
 import com.hadjower.crudapp.model.*;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import com.hadjower.crudapp.model.Window;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -12,8 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
+import javafx.stage.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -48,10 +46,12 @@ public class MainStageController {
     private Connectable connectable;
 
     private Stage mainStage;
-    private Parent edit;
-    private FXMLLoader editLoader;
+    private Parent editRoot;
+    private Parent newTableRoot;
     private EditController editController;
+    private NewTableController newTableController;
     private Stage editStage;
+    private Stage newTableStage;
 
     public void initialize() {
         connectable = new DBTable();
@@ -70,6 +70,10 @@ public class MainStageController {
 
     private void loadTable(String tableName) {
         table.setTableName(tableName);
+        setTableInfo();
+        if (editController != null) {
+            editController.reset();
+        }
         tuneTable();
         update();
     }
@@ -102,7 +106,7 @@ public class MainStageController {
     }
 
     private double calculateWidth(List<String> columnNames) {
-        return columnNames.contains("id") ? (tableView.getPrefWidth() - 40)/(columnNames.size() - 1) : tableView.getPrefWidth()/columnNames.size();
+        return columnNames.contains("id") ? (tableView.getPrefWidth() - 40) / (columnNames.size() - 1) : tableView.getPrefWidth() / columnNames.size();
     }
 
     private List<String> getColumnNames() {
@@ -117,21 +121,33 @@ public class MainStageController {
     }
 
     private void loadFxml() {
+        FXMLLoader fxmlLoader;
         try {
-            editLoader = new FXMLLoader();
-            editLoader.setLocation(getClass().getResource("/fxml/edit.fxml"));
-            edit = editLoader.load();
-            editController = editLoader.getController();
+            fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/edit_stage.fxml"));
+            editRoot = fxmlLoader.load();
+            editController = fxmlLoader.getController();
+            editStage = new Stage();
+
+            fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/new_table.fxml"));
+            newTableRoot = fxmlLoader.load();
+            newTableController = fxmlLoader.getController();
+            newTableStage = new Stage();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     private void setTableInfo() {
-        table_name.setText("Table " + table.getTableName());
-        ObservableList<String> columnNames = FXCollections.observableArrayList(table.getColumnNamesAndTypes());
-        tableInfoListView.setItems(columnNames);
-        updateNotesCounter();
+        table_name.setText("Table " + table.getTableName()!=null ? table.getTableName() : "-----");
+
+        if (table.getTableName() != null) {
+            ObservableList<String> columnNames = FXCollections.observableArrayList(table.getColumnNamesAndTypes());
+            tableInfoListView.setItems(columnNames);
+            updateNotesCounter();
+        } else {
+            tableInfoListView.getItems().clear();
+            notesCounter.setText("Amount of notes: -----");
+        }
     }
 
     private void updateNotesCounter() {
@@ -155,12 +171,13 @@ public class MainStageController {
         mainStage.setOnCloseRequest(event -> connectable.closeConnection());
 
         tablesListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            openTableBtn.setDisable(false);
 
             if (tablesListView.getSelectionModel().getSelectedItem() != null) {
                 newDelTableBtn.setText("Delete");
+                openTableBtn.setDisable(false);
             } else {
                 newDelTableBtn.setText("New");
+                openTableBtn.setDisable(true);
 
             }
         });
@@ -168,22 +185,34 @@ public class MainStageController {
 
     public void add(ActionEvent actionEvent) {
         editController.setNote(new Note());
-        openModalWindow("Creating new note");
+        openModalWindow("Creating new note", Window.EDIT);
+        //if cancel wasn't pressed
         table.add(editController.getNote());
         update();
     }
 
-    private void openModalWindow(String s) {
-        if (editStage == null) {
-            editStage = new Stage();
-            Scene scene = new Scene(edit);
-            editStage.setTitle(s);
-            editStage.setScene(scene);
-            editStage.initOwner(mainStage);
-            editStage.initModality(Modality.WINDOW_MODAL);
+    private void openModalWindow(String s, Window window) {
+        Stage stage = null;
+        Parent root = null;
+        switch (window) {
+            case EDIT:
+                stage = editStage;
+                root = editRoot;
+                break;
+            case NEW_TABLE:
+                stage = newTableStage;
+                root = newTableRoot;
+                break;
+        }
+        if (root.getScene() == null) {
+            Scene scene = new Scene(root);
+            stage.setTitle(s);
+            stage.setScene(scene);
+            stage.initOwner(mainStage);
+            stage.initModality(Modality.WINDOW_MODAL);
         }
 
-        editStage.showAndWait();
+        stage.showAndWait();
     }
 
     public void edit(Event mouseEvent) {
@@ -191,7 +220,7 @@ public class MainStageController {
         if (selectedNote == null)
             return;
         editController.setNote(selectedNote);
-        openModalWindow("Editing note");
+        openModalWindow("Editing note", Window.EDIT);
         table.edit(selectedNote);
         update();
     }
@@ -225,12 +254,33 @@ public class MainStageController {
 
             switch (btn.getId()) {
                 case "openTableBtn":
-                    String tableName = tablesListView.getSelectionModel().getSelectedItem();
+                    String selectedItem = tablesListView.getSelectionModel().getSelectedItem();
                     tablesListView.getSelectionModel().clearSelection();
-                    loadTable(tableName);
+                    loadTable(selectedItem);
                     btn.setDisable(true);
                     break;
                 case "newDelTableBtn":
+                    if (btn.getText().equals("New")) {
+                        openModalWindow("Creating new table", Window.NEW_TABLE);
+                        if (newTableController.getTableName() != null) {
+                            String tableName = newTableController.getTableName();
+                            List<String> columnNames = newTableController.getColumnNames();
+                            table.createTable(tableName, columnNames);
+                            loadTable(tableName);
+                            setDBInfo();
+                        }
+                    } else {
+                        String tableName = tablesListView.getSelectionModel().getSelectedItem();
+                        if (tableName != null) {
+                            String currTable = table.getTableName();
+                            table.deleteTable(tableName);
+                            if (currTable.equals(tableName)) {
+                                tableView.getColumns().clear();
+                                setTableInfo();
+                            }
+                            setDBInfo();
+                        }
+                    }
                     break;
             }
         }

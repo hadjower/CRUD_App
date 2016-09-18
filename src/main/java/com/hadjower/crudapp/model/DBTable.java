@@ -10,9 +10,9 @@ import java.util.List;
 
 public class DBTable implements iTable, Connectable {
 
-    private String URL = "jdbc:sqlite:src/main/resources/db/test.db";
-    private String dbName = "test";
-    private String tableName = "users";
+    private final String URL = "jdbc:sqlite:src/main/resources/db/test.db";
+    private final String dbName = "test";
+    private String tableName;
     private String primaryKey = "id";
 
     private Statement statement;
@@ -188,6 +188,40 @@ public class DBTable implements iTable, Connectable {
     @Override
     public void setTableName(String tableName) {
         this.tableName = tableName;
+    }
+
+    @Override
+    public void createTable(String tableName, List<String> columnNames) {
+        StringBuilder sql = new StringBuilder("CREATE TABLE " + tableName);
+        sql.append(" (");
+        sql.append("id INTEGER PRIMARY KEY");
+        for (String columnName : columnNames) {
+            sql.append(", ");
+            if (columnName.equals("id") || columnName.equals("_id")) {
+                continue;
+            }
+            sql.append(columnName);
+            sql.append(" TEXT");
+        }
+        sql.append(")");
+        try {
+            statement.execute(sql.toString());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void deleteTable(String tableName) {
+        try {
+            statement.execute("DROP TABLE " + tableName);
+            this.tableName = null;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+        //todo after update infos
     }
 
     public void connect() {
