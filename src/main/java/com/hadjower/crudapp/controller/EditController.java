@@ -7,6 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -16,6 +17,8 @@ import java.util.List;
 
 public class EditController {
 
+    @FXML
+    public BorderPane root;
     @FXML
     private VBox notesVBox;
 
@@ -40,6 +43,7 @@ public class EditController {
                 fields.add(noteField);
                 notesVBox.getChildren().add(noteField.getPane());
             }
+            root.setPrefHeight((fieldCounter - 1) * 100 + 60);
         }
 
         for (int i = 0; i < fieldCounter - 1; i++) {
