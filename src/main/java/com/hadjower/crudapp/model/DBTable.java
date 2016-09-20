@@ -219,9 +219,6 @@ public class DBTable implements iTable, Connectable {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-
-        //todo after update infos
     }
 
     public void connect() {

@@ -46,11 +46,9 @@ public class EditController {
             root.setPrefHeight((fieldCounter - 1) * 100 + 60);
         }
 
-        if (note != null) {
             for (int i = 0; i < fieldCounter - 1; i++) {
-                fields.get(i).setTextFieldText(note.getValue(Note.getColumnNames().get(i+1)));
+                fields.get(i).setTextFieldText(note != null ? note.getValue(Note.getColumnNames().get(i+1)) : "");
             }
-        }
     }
 
     private void hideWindow(ActionEvent actionEvent) {

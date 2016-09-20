@@ -168,6 +168,12 @@ public class MainStageController {
             }
         });
 
+        tablesListView.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                openTable();
+            }
+        });
+
         mainStage.setOnCloseRequest(event -> connectable.closeConnection());
 
         tablesListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
@@ -256,10 +262,7 @@ public class MainStageController {
 
             switch (btn.getId()) {
                 case "openTableBtn":
-                    String selectedItem = tablesListView.getSelectionModel().getSelectedItem();
-                    tablesListView.getSelectionModel().clearSelection();
-                    loadTable(selectedItem);
-                    btn.setDisable(true);
+                    openTable();
                     break;
                 case "newDelTableBtn":
                     if (btn.getText().equals("New")) {
@@ -287,4 +290,15 @@ public class MainStageController {
             }
         }
     }
+
+    private void openTable() {
+        String selectedItem = tablesListView.getSelectionModel().getSelectedItem();
+        tablesListView.getSelectionModel().clearSelection();
+        loadTable(selectedItem);
+        openTableBtn.setDisable(true);
+    }
 }
+
+
+//todo split all buttons onAction
+//todo create  delete warnings
